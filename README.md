@@ -17,7 +17,7 @@ ChartWizard是用于实时K线图表展示的功能模块，用户可以通过�
 
 ## 安装
 
-安装需要基于2.4.0版本以上的[VN Studio](https://www.vnpy.com)。
+安装需要基于2.6.0版本以上的[VN Studio](https://www.vnpy.com)。
 
 直接使用pip命令：
 
