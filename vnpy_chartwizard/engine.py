@@ -1,18 +1,19 @@
 from datetime import datetime
 from threading import Thread
+from typing import List
 
 from vnpy.event import Event, EventEngine
 from vnpy.trader.engine import BaseEngine, MainEngine
 from vnpy.trader.constant import Interval
-from vnpy.trader.object import HistoryRequest, ContractData
+from vnpy.trader.object import BarData, HistoryRequest, ContractData
 from vnpy.trader.utility import extract_vt_symbol
-from vnpy.trader.database import get_database
-from vnpy.trader.datafeed import get_datafeed
+from vnpy.trader.database import get_database, BaseDatabase
+from vnpy.trader.datafeed import get_datafeed, BaseDatafeed
 
 
-APP_NAME = "ChartWizard"
+APP_NAME: str = "ChartWizard"
 
-EVENT_CHART_HISTORY = "eChartHistory"
+EVENT_CHART_HISTORY: str = "eChartHistory"
 
 
 class ChartWizardEngine(BaseEngine):
@@ -20,12 +21,12 @@ class ChartWizardEngine(BaseEngine):
     For running chartWizard.
     """
 
-    def __init__(self, main_engine: MainEngine, event_engine: EventEngine):
+    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
         super().__init__(main_engine, event_engine, APP_NAME)
 
-        self.datafeed = get_datafeed()
-        self.database = get_database()
+        self.datafeed: BaseDatafeed = get_datafeed()
+        self.database: BaseDatabase = get_database()
 
     def query_history(
         self,
@@ -35,7 +36,7 @@ class ChartWizardEngine(BaseEngine):
         end: datetime
     ) -> None:
         """"""
-        thread = Thread(
+        thread: Thread = Thread(
             target=self._query_history,
             args=[vt_symbol, interval, start, end]
         )
@@ -51,7 +52,7 @@ class ChartWizardEngine(BaseEngine):
         """"""
         symbol, exchange = extract_vt_symbol(vt_symbol)
 
-        req = HistoryRequest(
+        req: HistoryRequest = HistoryRequest(
             symbol=symbol,
             exchange=exchange,
             interval=interval,
@@ -62,11 +63,11 @@ class ChartWizardEngine(BaseEngine):
         contract: ContractData = self.main_engine.get_contract(vt_symbol)
         if contract:
             if contract.history_data:
-                data = self.main_engine.query_history(req, contract.gateway_name)
+                data: List[BarData] = self.main_engine.query_history(req, contract.gateway_name)
             else:
-                data = self.datafeed.query_bar_history(req)
+                data: List[BarData] = self.datafeed.query_bar_history(req)
         else:
-            data = self.database.load_bar_data(
+            data: List[BarData] = self.database.load_bar_data(
                 symbol,
                 exchange,
                 interval,
@@ -74,5 +75,5 @@ class ChartWizardEngine(BaseEngine):
                 end
             )
 
-        event = Event(EVENT_CHART_HISTORY, data)
+        event: Event = Event(EVENT_CHART_HISTORY, data)
         self.event_engine.put(event)
