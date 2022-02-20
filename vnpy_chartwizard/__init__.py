@@ -37,4 +37,4 @@ class ChartWizardApp(BaseApp):
     display_name: str = "K线图表"
     engine_class: ChartWizardEngine = ChartWizardEngine
     widget_name: str = "ChartWizardWidget"
-    icon_name: str = "cw.ico"
+    icon_name: str = str(app_path.joinpath("ui", "cw.ico"))
