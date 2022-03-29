@@ -44,16 +44,16 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.tab: QtWidgets.QTabWidget = QtWidgets.QTabWidget()
         self.symbol_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
 
-        self.button = QtWidgets.QPushButton("新建图表")
+        self.button: QtWidgets.QPushButton = QtWidgets.QPushButton("新建图表")
         self.button.clicked.connect(self.new_chart)
 
-        hbox = QtWidgets.QHBoxLayout()
+        hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()
         hbox.addWidget(QtWidgets.QLabel("本地代码"))
         hbox.addWidget(self.symbol_line)
         hbox.addWidget(self.button)
         hbox.addStretch()
 
-        vbox = QtWidgets.QVBoxLayout()
+        vbox: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()
         vbox.addLayout(hbox)
         vbox.addWidget(self.tab)
 
@@ -61,7 +61,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
 
     def create_chart(self) -> ChartWidget:
         """"""
-        chart = ChartWidget()
+        chart: ChartWidget = ChartWidget()
         chart.add_plot("candle", hide_x_axis=True)
         chart.add_plot("volume", maximum_height=200)
         chart.add_item(CandleItem, "candle", "candle")
