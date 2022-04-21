@@ -1,5 +1,5 @@
 from copy import copy
-from typing import Dict, List
+from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 from tzlocal import get_localzone
 
@@ -19,9 +19,9 @@ from ..engine import APP_NAME, EVENT_CHART_HISTORY, ChartWizardEngine
 class ChartWizardWidget(QtWidgets.QWidget):
     """"""
 
-    signal_tick = QtCore.pyqtSignal(Event)
-    signal_spread = QtCore.pyqtSignal(Event)
-    signal_history = QtCore.pyqtSignal(Event)
+    signal_tick: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
+    signal_spread: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
+    signal_history: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """"""
@@ -84,7 +84,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
             return
 
         if "LOCAL" not in vt_symbol:
-            contract: ContractData = self.main_engine.get_contract(vt_symbol)
+            contract: Optional[ContractData] = self.main_engine.get_contract(vt_symbol)
             if not contract:
                 return
 
@@ -120,7 +120,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
     def process_tick_event(self, event: Event) -> None:
         """"""
         tick: TickData = event.data
-        bg: BarGenerator = self.bgs.get(tick.vt_symbol, None)
+        bg: Optional[BarGenerator] = self.bgs.get(tick.vt_symbol, None)
 
         if bg:
             bg.update_tick(tick)
@@ -141,7 +141,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         chart.update_history(history)
 
         # Subscribe following data update
-        contract: ContractData = self.main_engine.get_contract(bar.vt_symbol)
+        contract: Optional[ContractData] = self.main_engine.get_contract(bar.vt_symbol)
         if contract:
             req: SubscribeRequest = SubscribeRequest(
                 contract.symbol,
@@ -154,7 +154,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         spread: SpreadData = event.data
         tick: TickData = spread.to_tick()
 
-        bg: BarGenerator = self.bgs.get(tick.vt_symbol, None)
+        bg: Optional[BarGenerator] = self.bgs.get(tick.vt_symbol, None)
         if bg:
             bg.update_tick(tick)
 
