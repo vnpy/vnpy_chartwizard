@@ -1,7 +1,7 @@
 from copy import copy
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
-from tzlocal import get_localzone
+from tzlocal import get_localzone_name
 
 from vnpy.event import EventEngine, Event
 from vnpy.chart import ChartWidget, CandleItem, VolumeItem
@@ -9,7 +9,7 @@ from vnpy.trader.engine import MainEngine
 from vnpy.trader.ui import QtWidgets, QtCore
 from vnpy.trader.event import EVENT_TICK
 from vnpy.trader.object import ContractData, TickData, BarData, SubscribeRequest
-from vnpy.trader.utility import BarGenerator
+from vnpy.trader.utility import BarGenerator, ZoneInfo
 from vnpy.trader.constant import Interval
 from vnpy_spreadtrading.base import SpreadData, EVENT_SPREAD_DATA
 
@@ -97,7 +97,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.tab.addTab(chart, vt_symbol)
 
         # Query history data
-        end: datetime = datetime.now(get_localzone())
+        end: datetime = datetime.now(ZoneInfo(get_localzone_name()))
         start: datetime = end - timedelta(days=5)
 
         self.chart_engine.query_history(
