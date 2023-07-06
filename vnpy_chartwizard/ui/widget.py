@@ -42,6 +42,10 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.setWindowTitle("K线图表")
 
         self.tab: QtWidgets.QTabWidget = QtWidgets.QTabWidget()
+        # 菜单关闭响应函数
+        self.tab.setTabsClosable(True)
+        self.tab.tabCloseRequested.connect(self.close_tab)
+
         self.symbol_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
 
         self.button: QtWidgets.QPushButton = QtWidgets.QPushButton("新建图表")
@@ -72,6 +76,13 @@ class ChartWizardWidget(QtWidgets.QWidget):
     def show(self) -> None:
         """"""
         self.showMaximized()
+
+    def close_tab(self, index):
+        vt_symbol: str = self.tab.tabText(index)
+
+        self.tab.removeTab(index)
+        self.charts.pop(vt_symbol)
+        self.bgs.pop(vt_symbol)
 
     def new_chart(self) -> None:
         """"""
