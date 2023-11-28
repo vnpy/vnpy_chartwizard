@@ -10,8 +10,8 @@ from vnpy.trader.ui import QtWidgets, QtCore
 from vnpy.trader.event import EVENT_TICK
 from vnpy.trader.object import ContractData, TickData, BarData, SubscribeRequest
 from vnpy.trader.utility import BarGenerator, ZoneInfo
-from vnpy.trader.constant import Interval
-from vnpy_spreadtrading.base import SpreadData, EVENT_SPREAD_DATA
+from vnpy.trader.constant import Interval, Exchange
+from vnpy_spreadtrading.base import SpreadItem, EVENT_SPREAD_DATA
 
 from ..engine import APP_NAME, EVENT_CHART_HISTORY, ChartWizardEngine
 
@@ -151,8 +151,19 @@ class ChartWizardWidget(QtWidgets.QWidget):
 
     def process_spread_event(self, event: Event) -> None:
         """"""
-        spread: SpreadData = event.data
-        tick: TickData = spread.to_tick()
+        spread_item: SpreadItem = event.data
+        tick: TickData = TickData(
+            symbol=spread_item.name,
+            exchange=Exchange.LOCAL,
+            datetime=spread_item.datetime,
+            name=spread_item.name,
+            last_price=(spread_item.bid_price + spread_item.ask_price) / 2,
+            bid_price_1=spread_item.bid_price,
+            ask_price_1=spread_item.ask_price,
+            bid_volume_1=spread_item.bid_volume,
+            ask_volume_1=spread_item.ask_volume,
+            gateway_name="SPREAD"
+        )
 
         bg: Optional[BarGenerator] = self.bgs.get(tick.vt_symbol, None)
         if bg:
