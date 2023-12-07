@@ -17,14 +17,14 @@ from ..engine import APP_NAME, EVENT_CHART_HISTORY, ChartWizardEngine
 
 
 class ChartWizardWidget(QtWidgets.QWidget):
-    """"""
+    """K线图表控件"""
 
     signal_tick: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
     signal_spread: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
     signal_history: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
-        """"""
+        """构造函数"""
         super().__init__()
 
         self.main_engine: MainEngine = main_engine
@@ -38,11 +38,11 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.register_event()
 
     def init_ui(self) -> None:
-        """"""
+        """初始化界面"""
         self.setWindowTitle("K线图表")
 
         self.tab: QtWidgets.QTabWidget = QtWidgets.QTabWidget()
-        # 菜单关闭响应函数
+
         self.tab.setTabsClosable(True)
         self.tab.tabCloseRequested.connect(self.close_tab)
 
@@ -64,7 +64,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.setLayout(vbox)
 
     def create_chart(self) -> ChartWidget:
-        """"""
+        """创建图表对象"""
         chart: ChartWidget = ChartWidget()
         chart.add_plot("candle", hide_x_axis=True)
         chart.add_plot("volume", maximum_height=200)
@@ -74,10 +74,11 @@ class ChartWizardWidget(QtWidgets.QWidget):
         return chart
 
     def show(self) -> None:
-        """"""
+        """最大化显示"""
         self.showMaximized()
 
-    def close_tab(self, index):
+    def close_tab(self, index: int) -> None:
+        """关闭标签"""
         vt_symbol: str = self.tab.tabText(index)
 
         self.tab.removeTab(index)
@@ -85,7 +86,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.bgs.pop(vt_symbol)
 
     def new_chart(self) -> None:
-        """"""
+        """创建新的图表"""
         # Filter invalid vt_symbol
         vt_symbol: str = self.symbol_line.text()
         if not vt_symbol:
@@ -119,7 +120,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         )
 
     def register_event(self) -> None:
-        """"""
+        """注册事件监听"""
         self.signal_tick.connect(self.process_tick_event)
         self.signal_history.connect(self.process_history_event)
         self.signal_spread.connect(self.process_spread_event)
@@ -129,7 +130,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
         self.event_engine.register(EVENT_SPREAD_DATA, self.signal_spread.emit)
 
     def process_tick_event(self, event: Event) -> None:
-        """"""
+        """处理Tick事件"""
         tick: TickData = event.data
         bg: Optional[BarGenerator] = self.bgs.get(tick.vt_symbol, None)
 
@@ -142,7 +143,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
             chart.update_bar(bar)
 
     def process_history_event(self, event: Event) -> None:
-        """"""
+        """处理历史事件"""
         history: List[BarData] = event.data
         if not history:
             return
@@ -161,7 +162,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
             self.main_engine.subscribe(req, contract.gateway_name)
 
     def process_spread_event(self, event: Event) -> None:
-        """"""
+        """处理价差事件"""
         spread_item: SpreadItem = event.data
         tick: TickData = TickData(
             symbol=spread_item.name,
@@ -186,6 +187,6 @@ class ChartWizardWidget(QtWidgets.QWidget):
             chart.update_bar(bar)
 
     def on_bar(self, bar: BarData) -> None:
-        """"""
+        """K线合成回调"""
         chart: ChartWidget = self.charts[bar.vt_symbol]
         chart.update_bar(bar)
