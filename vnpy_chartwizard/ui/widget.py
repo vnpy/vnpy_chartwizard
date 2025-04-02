@@ -19,9 +19,9 @@ from ..engine import APP_NAME, EVENT_CHART_HISTORY, ChartWizardEngine
 class ChartWizardWidget(QtWidgets.QWidget):
     """K线图表控件"""
 
-    signal_tick: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
-    signal_spread: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
-    signal_history: QtCore.pyqtSignal = QtCore.pyqtSignal(Event)
+    signal_tick: QtCore.Signal = QtCore.Signal(Event)
+    signal_spread: QtCore.Signal = QtCore.Signal(Event)
+    signal_history: QtCore.Signal = QtCore.Signal(Event)
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
         """构造函数"""
