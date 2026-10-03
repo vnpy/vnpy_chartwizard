@@ -1,3 +1,4 @@
+"""K 线图表界面组件。"""
 from copy import copy
 from datetime import datetime, timedelta
 from tzlocal import get_localzone_name

@@ -1,3 +1,4 @@
+"""K 线图表的历史数据查询引擎。"""
 from datetime import datetime
 from threading import Thread
 
@@ -17,11 +18,11 @@ EVENT_CHART_HISTORY = "eChartHistory"
 
 class ChartWizardEngine(BaseEngine):
     """
-    For running chartWizard.
+    用于运行图表向导。
     """
 
     def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
-        """"""
+        """取得数据服务和数据库实例。"""
         super().__init__(main_engine, event_engine, APP_NAME)
 
         self.datafeed: BaseDatafeed = get_datafeed()
@@ -34,7 +35,7 @@ class ChartWizardEngine(BaseEngine):
         start: datetime,
         end: datetime
     ) -> None:
-        """"""
+        """启动线程查询历史 K 线。"""
         thread: Thread = Thread(
             target=self._query_history,
             args=[vt_symbol, interval, start, end]
