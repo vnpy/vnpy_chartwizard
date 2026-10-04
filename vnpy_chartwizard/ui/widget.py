@@ -1,6 +1,7 @@
 """K 线图表界面组件。"""
 from copy import copy
 from datetime import datetime, timedelta
+from typing import cast
 from tzlocal import get_localzone_name
 
 from vnpy.event import EventEngine, Event
@@ -29,7 +30,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
 
         self.main_engine: MainEngine = main_engine
         self.event_engine: EventEngine = event_engine
-        self.chart_engine: ChartWizardEngine = main_engine.get_engine(APP_NAME)
+        self.chart_engine: ChartWizardEngine = cast(ChartWizardEngine, main_engine.get_engine(APP_NAME))
 
         self.bgs: dict[str, BarGenerator] = {}
         self.charts: dict[str, ChartWidget] = {}
@@ -138,7 +139,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
             bg.update_tick(tick)
 
             chart: ChartWidget = self.charts[tick.vt_symbol]
-            bar: BarData = copy(bg.bar)
+            bar: BarData = cast(BarData, copy(bg.bar))
             bar.datetime = bar.datetime.replace(second=0, microsecond=0)
             chart.update_bar(bar)
 
@@ -182,7 +183,7 @@ class ChartWizardWidget(QtWidgets.QWidget):
             bg.update_tick(tick)
 
             chart: ChartWidget = self.charts[tick.vt_symbol]
-            bar: BarData = copy(bg.bar)
+            bar: BarData = cast(BarData, copy(bg.bar))
             bar.datetime = bar.datetime.replace(second=0, microsecond=0)
             chart.update_bar(bar)
 
