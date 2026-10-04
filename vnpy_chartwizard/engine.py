@@ -4,16 +4,16 @@ from threading import Thread
 
 from vnpy.event import Event, EventEngine
 from vnpy.trader.engine import BaseEngine, MainEngine
-from vnpy.trader.constant import Interval
+from vnpy.trader.constant import Exchange, Interval
 from vnpy.trader.object import BarData, HistoryRequest, ContractData
 from vnpy.trader.utility import extract_vt_symbol
 from vnpy.trader.database import get_database, BaseDatabase
 from vnpy.trader.datafeed import get_datafeed, BaseDatafeed
 
 
-APP_NAME = "ChartWizard"
+APP_NAME: str = "ChartWizard"
 
-EVENT_CHART_HISTORY = "eChartHistory"
+EVENT_CHART_HISTORY: str = "eChartHistory"
 
 
 class ChartWizardEngine(BaseEngine):
@@ -50,6 +50,8 @@ class ChartWizardEngine(BaseEngine):
         end: datetime
     ) -> None:
         """"""
+        symbol: str
+        exchange: Exchange
         symbol, exchange = extract_vt_symbol(vt_symbol)
 
         req: HistoryRequest = HistoryRequest(
